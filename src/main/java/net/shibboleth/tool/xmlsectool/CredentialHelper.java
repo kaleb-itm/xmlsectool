@@ -142,7 +142,6 @@ public final class CredentialHelper {
      * @throws IOException if it is not possible to read the keystore
      * @throws GeneralSecurityException if there is a problem loading the keystore, or loading the credential from it
      */
-    @SuppressWarnings("unchecked")
     protected static BasicX509Credential getPKCS11Credential(final String keystoreProvider, final String pkcs11Config,
             final String keyAlias, final String keyPassword) throws IOException, GeneralSecurityException {
         LOG.debug("Install PKCS11 provider");
@@ -171,7 +170,7 @@ public final class CredentialHelper {
             LOG.error("Keystore provider class does not provide a String-argument constructor");
             throw new Terminator(ReturnCode.RC_INIT);
         } catch (final Exception e) {
-            LOG.error("Unable to read PKCS11 keystore", e);
+            LOG.error("Unable to read PKCS11 keystore: {}", e.getMessage());
             throw new IOException("Unable to read PKCS11 keystore", e);
         }
 

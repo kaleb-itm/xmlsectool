@@ -56,7 +56,7 @@ public class SchemaValidator {
      * 
      * @param schemaLanguage schema language in use: either XSD or RELAX
      * @param schemaLocation location of the schema description (may be a directory of schema files)
-     * @throws SAXException 
+     * @throws SAXException if there is a problem converting the schema sources into a schema
      */
     public SchemaValidator(@Nonnull final SchemaLanguage schemaLanguage, @Nonnull final File schemaLocation)
             throws SAXException {

@@ -80,7 +80,11 @@ public abstract class BaseTest {
     /** Initialized parser pool used to parser data. */
     private BasicParserPool parserPool;
 
-    /** Constructor */
+    /**
+     * Constructor
+     * 
+     * @param clazz class under test
+     */
     protected BaseTest(final Class<?> clazz) {
         testingClass = clazz;
         baseClassPath = nameToPath(testingClass.getName());

@@ -34,12 +34,12 @@ public class Blacklist {
     /**
      * Ordered set of blacklisted digest algorithm URIs.
      */
-    private final Set<String> digestBlacklist = new TreeSet<String>();
+    private final Set<String> digestBlacklist = new TreeSet<>();
     
     /**
      * Ordered set of blacklisted signature algorithm URIs.
      */
-    private final Set<String> signatureBlacklist = new TreeSet<String>();
+    private final Set<String> signatureBlacklist = new TreeSet<>();
     
     /**
      * Constructor.

@@ -943,7 +943,7 @@ public final class XMLSecTool {
             return Collections.emptyList();
         }
 
-        final ArrayList<X509CRL> crls = new ArrayList<X509CRL>();
+        final ArrayList<X509CRL> crls = new ArrayList<>();
         File crlFile = null;
         try {
             for (final String crlFilePath : keyInfoCrls) {

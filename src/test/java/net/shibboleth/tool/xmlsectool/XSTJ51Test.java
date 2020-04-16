@@ -67,12 +67,20 @@ public class XSTJ51Test extends BaseTest {
 
         // acquire a document to sign
         final Document xml = readXMLDocument("in.xml");
-        
+
         // perform signature operation
-        XMLSecTool.sign(cli, cred, xml);
-        
+        try {
+            XMLSecTool.sign(cli, cred, xml);
+        } catch (final Terminator term) {
+            Assert.fail("sign method threw Terminator: " + term.getExitCode());
+        }
+
         // verify the signature using our own code for consistency
-        XMLSecTool.verifySignature(cli, cred, xml);
+        try {
+            XMLSecTool.verifySignature(cli, cred, xml);
+        } catch (final Terminator term) {
+            Assert.fail("verifySignature method threw Terminator: " + term.getExitCode());
+        }
 
         // take a careful look at the signature
         final Element signatureElement = XMLSecTool.getSignatureElement(xml);

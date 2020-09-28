@@ -41,12 +41,12 @@ public class XSTJ51Test extends BaseTest {
         super(XSTJ51Test.class);
     }
     
-    @BeforeMethod
-    protected void conditionalSkip() {
-        if (!canTestECC()) {
-            throw new SkipException("skipping because we don't have a working ECC provider");
-        }        
-    }
+//    @BeforeMethod
+//    protected void conditionalSkip() {
+//        if (!canTestECC()) {
+//            throw new SkipException("skipping because we don't have a working ECC provider");
+//        }        
+//    }
 
     @Test
     public void xstj51_KeyInfo() throws Exception {

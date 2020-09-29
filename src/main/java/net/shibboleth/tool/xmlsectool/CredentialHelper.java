@@ -33,7 +33,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.opensaml.security.crypto.KeySupport;
 import org.opensaml.security.x509.BasicX509Credential;
@@ -203,7 +202,7 @@ public final class CredentialHelper {
         final BasicX509Credential credential;
         if (keyEntry instanceof PrivateKeyEntry) {
             final PrivateKeyEntry privKeyEntry = (PrivateKeyEntry) keyEntry;
-            final List certChain = Arrays.asList(privKeyEntry.getCertificateChain());
+            final var certChain = Arrays.asList((X509Certificate[]) privKeyEntry.getCertificateChain());
             credential = new BasicX509Credential((X509Certificate) privKeyEntry.getCertificate());
             credential.setEntityCertificateChain(certChain);
             credential.setPrivateKey(privKeyEntry.getPrivateKey());

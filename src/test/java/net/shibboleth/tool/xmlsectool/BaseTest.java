@@ -22,9 +22,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.util.MissingResourceException;
 
@@ -32,7 +30,6 @@ import javax.annotation.Nonnull;
 import javax.xml.transform.Source;
 
 import org.opensaml.core.config.InitializationException;
-import org.opensaml.security.SecurityProviderTestSupport;
 import org.opensaml.security.x509.X509Credential;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.testng.Assert;
@@ -49,7 +46,6 @@ import org.xmlunit.input.NormalizedSource;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.primitive.StringSupport;
-import net.shibboleth.utilities.java.support.testing.TestSupport;
 import net.shibboleth.utilities.java.support.xml.BasicParserPool;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
@@ -300,33 +296,7 @@ public abstract class BaseTest {
     protected void zapSignatureValues(@Nonnull final Document doc) {
         zapSignatureValues(doc.getDocumentElement(), "zap");
     }
-    
-    /**
-     * Is it worth testing Elliptic Curve signatures?
-     * 
-     * @return <code>true</code> if we can test Elliptic Curve signatures
-     */
-    protected boolean canTestECC() {
-        final Signature ecsig;
-        try {
-            // look for an ECC provider
-            ecsig = Signature.getInstance("SHA256withECDSA");
-        } catch (NoSuchAlgorithmException e) {
-            // if we don't have one at all, we can't test ECC
-            return false;
-        }
 
-        // If we're using something claiming to be SunEC on OpenJDK 7, it may actually be broken
-        // so don't bother with the tests.
-        final SecurityProviderTestSupport sup = new SecurityProviderTestSupport();
-        if (ecsig.getProvider().getName().equals(SecurityProviderTestSupport.SUNEC_PROVIDER_NAME) &&
-                sup.isOpenJDK() && !TestSupport.isJavaV8OrLater()) {
-            return false;
-        }
-
-        return true;
-    }
-    
     // *********************************
     // ***                           ***
     // ***   C R E D E N T I A L S   ***

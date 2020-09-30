@@ -20,19 +20,20 @@ package net.shibboleth.tool.xmlsectool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.security.GeneralSecurityException;
 import java.security.KeyException;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStore.TrustedCertificateEntry;
 import java.security.KeyStoreException;
-import java.security.Provider;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.annotation.Nonnull;
 
 import org.opensaml.security.crypto.KeySupport;
 import org.opensaml.security.x509.BasicX509Credential;
@@ -129,53 +130,71 @@ public final class CredentialHelper {
     }
 
     /**
-     * Reads in the X509 credentials from a PKCS11 source.
+     * Dump the list of available security providers for diagnostic purposes.
+     *
+     * @param message heading message to use before the list of providers
+     */
+    private static void dumpSecurityProviders(@Nonnull final String message) {
+        if (LOG.isDebugEnabled() ) {
+            LOG.debug(message);
+            for (final var provider : Security.getProviders()) {
+                LOG.debug("   available security provider: {}", provider.getName());
+            }
+        }
+    }
+
+    /**
+     * Reads in an X.509 credential from a PKCS11 source.
      * 
-     * @param keystoreProvider keystore provider class
-     * @param pkcs11Config PKCS11 configuration file used by the keystore provider
+     * @param keystoreProvider keystore provider class (legacy: should now be <code>null</code>)
+     * @param pkcs11Config configuration file used by the PKCS#11 provider
      * @param keyAlias private key keystore alias
      * @param keyPassword private key password, may not be null
      * 
-     * @return the credentials
+     * @return the credential
      * 
      * @throws IOException if it is not possible to read the keystore
      * @throws GeneralSecurityException if there is a problem loading the keystore, or loading the credential from it
      */
     protected static BasicX509Credential getPKCS11Credential(final String keystoreProvider, final String pkcs11Config,
             final String keyAlias, final String keyPassword) throws IOException, GeneralSecurityException {
-        LOG.debug("Install PKCS11 provider");
 
-        KeyStore keystore = null;
+        // Warn about the legacy use of --keystoreProvider
+        if (keystoreProvider != null) {
+            LOG.warn("The --keystoreProvider option is now ignored when used with --pkcs11Config; remove it");
+        }
+
+        dumpSecurityProviders("Acquiring PKCS11 keystore");
+
+        // Head off legacy use of --pkcs11Config DUMMY
+        if (!new File(pkcs11Config).exists()) {
+            LOG.error("PKCS#11 configuration file '{}' does not exist", pkcs11Config);
+            throw new IOException("PKCS#11 configuration file '" + pkcs11Config + "' does not exist");
+        }
+
         try {
-            if (keystoreProvider != null) {
-                LOG.debug("Creating PKCS11 keystore with provider {} and configuration file {}", keystoreProvider,
-                        pkcs11Config);
-                final Class<Provider> providerClass =
-                        (Class<Provider>) CredentialHelper.class.getClassLoader().loadClass(keystoreProvider);
-                final Constructor<Provider> providerConstructor = providerClass.getConstructor(String.class);
-                final Provider pkcs11Provider = providerConstructor.newInstance(pkcs11Config);
-                pkcs11Provider.load(new FileInputStream(pkcs11Config));
-                Security.addProvider(pkcs11Provider);
-                keystore = KeyStore.getInstance("PKCS11", pkcs11Provider);
-            } else {
-                LOG.debug("Creating PKCS11 keystore with system wide provider and configuration file");
-                keystore = KeyStore.getInstance("PKCS11");
+            LOG.debug("Creating PKCS11 keystore with configuration file {}", pkcs11Config);
+            
+            final var baseProvider = Security.getProvider("SunPKCS11");
+            if (baseProvider == null) {
+                throw new NoSuchProviderException("could not acquire unconfigured PKCS#11 provider");
             }
-        } catch (final ClassNotFoundException e) {
-            LOG.error((new StringBuilder("Unable to load keystore provider class: ")).append(keystoreProvider)
-                    .toString());
-            throw new Terminator(ReturnCode.RC_INIT);
-        } catch (final NoSuchMethodException e) {
-            LOG.error("Keystore provider class does not provide a String-argument constructor");
-            throw new Terminator(ReturnCode.RC_INIT);
+            LOG.debug("Unconfigured PKCS#11 provider: " + baseProvider.getName());
+            final var pkcs11Provider = baseProvider.configure(pkcs11Config);
+            LOG.debug("Configured PKCS#11 provider: " + pkcs11Provider.getName());
+
+            Security.addProvider(pkcs11Provider);
+
+            final var keystore = KeyStore.getInstance("PKCS11", pkcs11Provider);
+            LOG.debug("Initializing PKCS11 keystore");
+            keystore.load(null, keyPassword.toCharArray());
+            return getCredentialFromKeystore(keystore, keyAlias, keyPassword);
+
         } catch (final Exception e) {
             LOG.error("Unable to read PKCS11 keystore: {}", e.getMessage());
             throw new IOException("Unable to read PKCS11 keystore", e);
         }
 
-        LOG.debug("Initializing PKCS11 keystore");
-        keystore.load(null, keyPassword.toCharArray());
-        return getCredentialFromKeystore(keystore, keyAlias, keyPassword);
     }
 
     /**

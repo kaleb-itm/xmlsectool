@@ -684,11 +684,6 @@ public class CommandLineArguments {
         out.println(String.format("  --%-20s %s", KEY_ARG,
                 "Specifies the key alias for the signing key is read."));
         out.println(String.format("  --%-20s %s", KEY_PASSWORD_ARG, "Specifies the pin for the signing key."));
-        out.println(String.format(
-                "  --%-20s %s",
-                KEYSTORE_PROVIDER_ARG,
-                "The fully qualified class name of the PKCS#11 keystore provider implementation. "
-                + "(e.g., sun.security.pkcs11.SunPKCS11)"));
 
         out.println();
         out.println("Signature verification algorithm blacklist options:");

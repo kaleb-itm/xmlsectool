@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #
-# See the Javadoc for the XmlSecTool main class for documentation
+# See the Javadoc for the XMLSecTool main class for documentation
 # of non-zero exit codes.
 #
 
@@ -46,4 +46,4 @@ do
     fi
 done
 
-"$JAVACMD" '-Xmx256m' '-classpath' "$LOCALCLASSPATH" $JVMOPTS '-Dnet.shibboleth.tool.xmlsectool.XMLSecTool.home='"$LOCATION" 'net.shibboleth.tool.xmlsectool.XMLSecTool' "$@"
+"$JAVACMD" '-classpath' "$LOCALCLASSPATH" $JVMOPTS '-Dnet.shibboleth.tool.xmlsectool.XMLSecTool.home='"$LOCATION" 'net.shibboleth.tool.xmlsectool.XMLSecTool' "$@"

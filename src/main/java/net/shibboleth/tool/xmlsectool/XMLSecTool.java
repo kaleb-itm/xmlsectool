@@ -411,6 +411,7 @@ public final class XMLSecTool {
 
             addSignatureELement(cli, documentRoot, signatureElement);
             signature.sign(CredentialSupport.extractSigningKey(signingCredential));
+            SignatureHelper.postProcessSignature(signatureElement);
             log.info("XML document successfully signed");
         } catch (final XMLSecurityException e) {
             log.error("Unable to create XML document signature", e);

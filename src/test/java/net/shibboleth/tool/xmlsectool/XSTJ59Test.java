@@ -41,7 +41,7 @@ public class XSTJ59Test extends BaseTest {
     @Test
     public void xstj59_1024_regression() throws Exception {
         // acquire a credential to sign with
-        final X509Credential cred = getSigningCredential("dsa1024", "DSA", DSAPublicKey.class);
+        final X509Credential cred = getPackageSigningCredential("dsa1024", "DSA", DSAPublicKey.class);
 
         // build command-line arguments
         final String[] args = {

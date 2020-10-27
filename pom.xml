@@ -26,7 +26,6 @@
         <opensaml.groupId>org.opensaml</opensaml.groupId>
         <opensaml.version>4.0.1</opensaml.version>
         <java-support.version>8.0.0</java-support.version>
-        <xmlsec.version>2.0.6</xmlsec.version>
     </properties>
 
     <repositories>

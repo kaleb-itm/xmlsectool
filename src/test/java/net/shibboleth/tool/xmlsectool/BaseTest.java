@@ -131,7 +131,7 @@ public abstract class BaseTest {
         try {
             return new File(url.toURI());
         } catch (URISyntaxException e) {
-            throw new MissingResourceException(which, testingClass.getName(), "can't locate package-relative file");
+            throw new MissingResourceException(which, testingClass.getName(), "can't locate class-relative file");
         }
     }
 
@@ -316,11 +316,11 @@ public abstract class BaseTest {
         final File keyFile = classRelativeFile(which + ".key");
         return CredentialHelper.getFileBasedCredentials(keyFile.toString(), null, certFile.toString());
     }
-    
+
     /**
      * Acquire a class-local signing credential consisting of a certificate and key.
      * 
-     * Checks that the returned credential has an appropriate public key algorithm and class.
+     * <p>Checks that the returned credential has an appropriate public key algorithm and class.</p>
      * 
      * @param which name of the credential to acquire
      * @param algorithm required public key algorithm
@@ -337,4 +337,40 @@ public abstract class BaseTest {
         Assert.assertTrue(clazz.isInstance(pk));
         return cred;
     }
+
+    /**
+     * Acquire a package-local signing credential consisting of a certificate and key.
+     * 
+     * @param which name of the credential to acquire
+     * @return the credential
+     * @throws KeyException if the key cannot be acquired
+     * @throws CertificateException if the certificate cannot be acquired
+     */
+    protected X509Credential getPackageSigningCredential(final String which) throws KeyException, CertificateException {
+        final File certFile = packageRelativeFile(which + ".crt");
+        final File keyFile = packageRelativeFile(which + ".key");
+        return CredentialHelper.getFileBasedCredentials(keyFile.toString(), null, certFile.toString());
+    }
+    
+    /**
+     * Acquire a package-local signing credential consisting of a certificate and key.
+     * 
+     * <p>Checks that the returned credential has an appropriate public key algorithm and class.</p>
+     * 
+     * @param which name of the credential to acquire
+     * @param algorithm required public key algorithm
+     * @param clazz required public key class or interface
+     * @return the credential
+     * @throws KeyException if the key cannot be acquired
+     * @throws CertificateException if the certificate cannot be acquired
+     */
+    protected X509Credential getPackageSigningCredential(final String which, final String algorithm, final Class<?> clazz)
+        throws KeyException, CertificateException {
+        final X509Credential cred = getPackageSigningCredential(which);
+        final PublicKey pk = cred.getPublicKey();
+        Assert.assertEquals(pk.getAlgorithm(), algorithm);
+        Assert.assertTrue(clazz.isInstance(pk));
+        return cred;
+    }
+
 }

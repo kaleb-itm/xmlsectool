@@ -146,7 +146,6 @@ public final class CredentialHelper {
     /**
      * Reads in an X.509 credential from a PKCS11 source.
      * 
-     * @param keystoreProvider keystore provider class (legacy: should now be <code>null</code>)
      * @param pkcs11Config configuration file used by the PKCS#11 provider
      * @param keyAlias private key keystore alias
      * @param keyPassword private key password, may not be null
@@ -156,13 +155,8 @@ public final class CredentialHelper {
      * @throws IOException if it is not possible to read the keystore
      * @throws GeneralSecurityException if there is a problem loading the keystore, or loading the credential from it
      */
-    protected static BasicX509Credential getPKCS11Credential(final String keystoreProvider, final String pkcs11Config,
+    protected static BasicX509Credential getPKCS11Credential(final String pkcs11Config,
             final String keyAlias, final String keyPassword) throws IOException, GeneralSecurityException {
-
-        // Warn about the legacy use of --keystoreProvider
-        if (keystoreProvider != null) {
-            LOG.warn("The --keystoreProvider option is now ignored when used with --pkcs11Config; remove it");
-        }
 
         dumpSecurityProviders("Acquiring PKCS11 keystore");
 

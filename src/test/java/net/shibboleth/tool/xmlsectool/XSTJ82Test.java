@@ -46,7 +46,6 @@ public class XSTJ82Test extends BaseTest {
                 "--inFile", "in.xml",
                 "--outFile", "out.xml",
                 "--pkcs11Config", configFile.getAbsolutePath(),
-                "--keystoreProvider", "dummy",
                 "--keyPassword", "1234",
                 "--key", "key2048",
                 };
@@ -55,7 +54,7 @@ public class XSTJ82Test extends BaseTest {
         XMLSecTool.initLogging(cli);
 
         // Deep unit test on the CredentialHelper's credential acquisition method
-        var cred = CredentialHelper.getPKCS11Credential(cli.getKeystoreProvider(), cli.getPkcs11Config(),
+        var cred = CredentialHelper.getPKCS11Credential(cli.getPkcs11Config(),
                 cli.getKey(), cli.getKeyPassword());
         Assert.assertNotNull(cred);
 

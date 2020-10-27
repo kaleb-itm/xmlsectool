@@ -24,13 +24,13 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+import net.shibboleth.utilities.java.support.primitive.DeprecationSupport;
+import net.shibboleth.utilities.java.support.primitive.DeprecationSupport.ObjectType;
+
 /** Command line arguments for the {@link XMLSecTool} command line tool. */
 public class CommandLineArguments {
 
-    /*
-     * Checkstyle: JavadocVariable OFF
-     * Checkstyle: JavadocMethod OFF
-     */
+    // Checkstyle: JavadocVariable OFF
 
     /** Prefix for all command-line option names. Separated out to make it easer to replicate the old usage text. */
     private static final String OPT = "--";
@@ -242,6 +242,21 @@ public class CommandLineArguments {
     @Parameter(names = HELP_ARG, help = true)
     private boolean help;
 
+    /**
+     * Parse the command-line arguments.
+     *
+     * <p>
+     * As well as basic parsing, this also:
+     * </p>
+     *
+     * <ul>
+     *   <li>validates the options used: results in fatal errors if they are invalid</li>
+     *   <li>applies some defaults</li>
+     *   <li>processes the options related to the disallowed algorithm list</li>
+     * </ul>
+     *
+     * @param args array of command-line arguments to parse
+     */
     public void parseCommandLineArguments(final String[] args) {
         try {
             final JCommander jc = new JCommander(this);
@@ -257,7 +272,27 @@ public class CommandLineArguments {
             errorAndExit(e.getMessage());
         }
     }
-    
+
+    /**
+     * Checks for any deprecations in the command-line options.
+     *
+     * <p>
+     * The logging system <strong>must</strong> have been set up
+     * before this is called.
+     * </p>
+     */
+    public void checkForDeprecations() {
+
+        // --keystoreProvider with --pkcs11Config deprecated in V3.0.0
+        if (getPkcs11Config() != null) {
+            if (getKeystoreProvider() != null) {
+                DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + KEYSTORE_PROVIDER_ARG,
+                        "now ignored when used with " + OPT + PKCS11_CONFIG_ARG, null);
+            }
+        }
+        
+    }
+
     /**
      * Handle options related to setting up the blacklist.
      * 
@@ -288,6 +323,9 @@ public class CommandLineArguments {
             }
         }
     }
+    
+    // Checkstyle: JavadocMethod OFF
+
 
     public String getHttpProxy() {
         return httpProxy;
@@ -474,6 +512,9 @@ public class CommandLineArguments {
         return help;
     }
 
+    // Checkstyle: MethodLength OFF
+    // Checkstyle: CyclomaticComplexity OFF
+
     private void validateCommandLineArguments() {
         if (doHelp()) {
             return;
@@ -548,8 +589,11 @@ public class CommandLineArguments {
         if (doVerboseOutput() && doQuietOutput()) {
             errorAndExit("Verbose and quiet output are mutually exclusive");
         }
-
     }
+
+    // Checkstyle: MethodLength OFF
+    // Checkstyle: CyclomaticComplexity OFF
+    // Checkstyle: JavadocMethod ON
 
     /**
      * Print command line help instructions.

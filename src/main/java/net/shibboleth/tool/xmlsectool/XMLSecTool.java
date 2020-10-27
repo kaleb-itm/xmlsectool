@@ -120,6 +120,7 @@ public final class XMLSecTool {
             final CommandLineArguments cli = new CommandLineArguments();
             cli.parseCommandLineArguments(args);
             initLogging(cli);
+            cli.checkForDeprecations();
 
             try {
                 InitializationSupport.initialize();
@@ -900,8 +901,8 @@ public final class XMLSecTool {
         } else if (cli.getPkcs11Config() != null) {
             try {
                 credential =
-                        CredentialHelper.getPKCS11Credential(cli.getKeystoreProvider(),
-                                cli.getPkcs11Config(), cli.getKey(), cli.getKeyPassword());
+                        CredentialHelper.getPKCS11Credential(cli.getPkcs11Config(),
+                                cli.getKey(), cli.getKeyPassword());
             } catch (final IOException e) {
                 log.error("Error accessing PKCS11 store", e);
                 throw new Terminator(ReturnCode.RC_IO);

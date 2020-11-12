@@ -65,6 +65,12 @@
             <groupId>${opensaml.groupId}</groupId>
             <artifactId>opensaml-security-api</artifactId>
             <version>${opensaml.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>${spring.groupId}</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${opensaml.groupId}</groupId>

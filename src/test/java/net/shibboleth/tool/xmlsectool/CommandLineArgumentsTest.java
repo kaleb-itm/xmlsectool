@@ -40,7 +40,7 @@ public class CommandLineArgumentsTest {
 	}
 	
 	@Test
-	public void xstj39_default_blacklist_SHA1() throws Exception {
+	public void xstj39_default_disallowed_SHA1() throws Exception {
 		final String[] args = {
 				"--sign",
 				"--inFile", "in.xml",
@@ -50,9 +50,9 @@ public class CommandLineArgumentsTest {
 				};
 		final CommandLineArguments cli = new CommandLineArguments();
 		cli.parseCommandLineArguments(args);
-		final Blacklist blacklist = cli.getBlacklist();
-		Assert.assertTrue(blacklist.isBlacklistedDigest(SignatureConstants.ALGO_ID_DIGEST_SHA1));
-		Assert.assertTrue(blacklist.isBlacklistedSignature(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1));
-		Assert.assertTrue(blacklist.isBlacklistedSignature(SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA1));
+		final DisallowedAlgorithms disallowed = cli.getDisallowedAlgorithms();
+		Assert.assertTrue(disallowed.isDigestAlgorithmDisallowed(SignatureConstants.ALGO_ID_DIGEST_SHA1));
+		Assert.assertTrue(disallowed.isSignatureAlgorithmDisallowed(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1));
+		Assert.assertTrue(disallowed.isSignatureAlgorithmDisallowed(SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA1));
 	}
 }

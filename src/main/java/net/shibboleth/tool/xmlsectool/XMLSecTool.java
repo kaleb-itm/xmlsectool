@@ -134,8 +134,8 @@ public final class XMLSecTool {
                 return;
             }
             
-            if (cli.doListBlacklist()) {
-                cli.getBlacklist().list(System.out);
+            if (cli.doListAlgorithms()) {
+                cli.getDisallowedAlgorithms().list(System.out);
                 return;
             }
 
@@ -675,12 +675,12 @@ public final class XMLSecTool {
         final Reference ref = extractReference(signature);
         markIdAttribute(xmlDocument.getDocumentElement(), ref);
         
-        // check reference digest algorithm against blacklist
+        // check reference digest algorithm is allowed
         try {
             final String alg = ref.getMessageDigestAlgorithm().getAlgorithmURI();
-            log.debug("blacklist checking digest {}", alg);
-            if (cli.getBlacklist().isBlacklistedDigest(alg)) {
-                log.error("Digest algorithm {} is blacklisted", alg);
+            log.debug("checking digest {} allowed", alg);
+            if (cli.getDisallowedAlgorithms().isDigestAlgorithmDisallowed(alg)) {
+                log.error("Digest algorithm {} is disallowed", alg);
                 throw new Terminator(ReturnCode.RC_SIG);
             }
         } catch (final XMLSignatureException e) {
@@ -688,11 +688,11 @@ public final class XMLSecTool {
             throw new Terminator(ReturnCode.RC_SIG);
         }
         
-        // check signature algorithm against blacklist
+        // check signature algorithm is allowed
         final String alg = signature.getSignedInfo().getSignatureMethodURI();
-        log.debug("blacklist checking signature method {}", alg);
-        if (cli.getBlacklist().isBlacklistedSignature(alg)) {
-            log.error("Signature algorithm {} is blacklisted", alg);
+        log.debug("checking signature method {} is allowed", alg);
+        if (cli.getDisallowedAlgorithms().isSignatureAlgorithmDisallowed(alg)) {
+            log.error("Signature algorithm {} is disallowed", alg);
             throw new Terminator(ReturnCode.RC_SIG);
         }        
 

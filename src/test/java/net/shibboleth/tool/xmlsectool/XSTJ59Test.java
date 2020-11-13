@@ -51,7 +51,7 @@ public class XSTJ59Test extends BaseTest {
                 "--certificate", "sign.crt",
                 "--key", "sign.key",
                 "--digest", "SHA-1",
-                "--whitelistDigest", "SHA-1"
+                "--allowDigest", "SHA-1"
                 };
         final CommandLineArguments cli = new CommandLineArguments();
         cli.parseCommandLineArguments(args);

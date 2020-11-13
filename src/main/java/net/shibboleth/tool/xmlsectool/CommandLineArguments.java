@@ -68,10 +68,18 @@ public class CommandLineArguments {
     private static final String KEYSTORE_TYPE_ARG = "keystoreType";
     private static final String KEYSTORE_PROVIDER_ARG = "keystoreProvider";
     private static final String PKCS11_CONFIG_ARG = "pkcs11Config";
+    @Deprecated(since="3.0.0", forRemoval=true)
     private static final String CLEAR_BLACKLIST_ARG = "clearBlacklist";
+    private static final String ALLOW_ALL_DIGESTS_ARG = "allowAllDigests";
+    @Deprecated(since="3.0.0", forRemoval=true)
     private static final String BLACKLIST_DIGEST_ARG = "blacklistDigest";
+    private static final String DISALLOW_DIGEST_ARG = "disallowDigest";
+    @Deprecated(since="3.0.0", forRemoval=true)
     private static final String WHITELIST_DIGEST_ARG = "whitelistDigest";
+    private static final String ALLOW_DIGEST_ARG = "allowDigest";
+    @Deprecated(since="3.0.0", forRemoval=true)
     private static final String LIST_BLACKLIST_ARG = "listBlacklist";
+    private static final String LIST_ALGORITHMS_ARG = "listAlgorithms";
     private static final String OUT_FILE_ARG = "outFile";
     private static final String DEFLATE_OUT_ARG = "deflateOutput";
     private static final String GZIP_OUT_ARG = "gzipOutput";
@@ -201,31 +209,50 @@ public class CommandLineArguments {
     @Parameter(names = OPT + PKCS11_CONFIG_ARG)
     private String pkcs11Config;
 
-    // Blacklisting
+    // Allowed / Disallowed algorithms.
     
     /**
-     * Local blacklist of signature and digest algorithms.
+     * Local collection of disallowed signature and digest algorithms.
      */
-    private final Blacklist blacklist = new Blacklist();
+    private final DisallowedAlgorithms disallowedAlgorithms = new DisallowedAlgorithms();
     
     /**
-     * Option requesting that the signature verification
-     * blacklists be cleared.
+     * Option requesting that all digest algorithms should be allowed.
      */
+    @Parameter(names = OPT + ALLOW_ALL_DIGESTS_ARG)
+    private boolean allowAllDigests;
     @Parameter(names = OPT + CLEAR_BLACKLIST_ARG)
+    @Deprecated(since="3.0.0", forRemoval=true)
     private boolean clearBlacklist;
         
     /**
      * Option requesting that the signature verification
-     * blacklists be listed.
+     * algorithms be listed.
      */
+    @Parameter(names = OPT + LIST_ALGORITHMS_ARG)
+    private boolean listAlgorithms;
     @Parameter(names = OPT + LIST_BLACKLIST_ARG)
+    @Deprecated(since="3.0.0", forRemoval=true)
     private boolean listBlacklist;
 
+    /**
+     * Option requesting that algorithms associated with a specific digest
+     * be disallowed.
+     */
+    @Parameter(names = OPT + DISALLOW_DIGEST_ARG)
+    private List<String> disallowDigestNames;
     @Parameter(names = OPT + BLACKLIST_DIGEST_ARG)
+    @Deprecated(since="3.0.0", forRemoval=true)
     private List<String> blacklistDigestNames;
 
+    /**
+     * Option requesting that algorithms associated with a specific digest
+     * be allowed.
+     */
+    @Parameter(names = OPT + ALLOW_DIGEST_ARG)
+    private List<String> allowDigestNames;
     @Parameter(names = OPT + WHITELIST_DIGEST_ARG)
+    @Deprecated(since="3.0.0", forRemoval=true)
     private List<String> whitelistDigestNames;
     
     // Logging
@@ -267,7 +294,7 @@ public class CommandLineArguments {
             }
 
             validateCommandLineArguments();
-            processBlacklistOptions();
+            processDisallowedAlgorithmOptions();
         } catch (final ParameterException e) {
             errorAndExit(e.getMessage());
         }
@@ -291,16 +318,64 @@ public class CommandLineArguments {
             }
         }
         
+        // --clearBlacklist changed to --allowAllDigests in V3.0.0
+        if (clearBlacklist) {
+            DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + CLEAR_BLACKLIST_ARG,
+                    null, OPT + ALLOW_ALL_DIGESTS_ARG);
+        }
+        
+        // --listBlacklist changed to --listAlgorithms in V3.0.0
+        if (listBlacklist) {
+            DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + LIST_BLACKLIST_ARG,
+                    null, OPT + LIST_ALGORITHMS_ARG);
+        }
+        
+        // --blacklistDigest changed to --disallowDigest in V3.0.0
+        if (blacklistDigestNames != null) {
+            DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + BLACKLIST_DIGEST_ARG,
+                    null, OPT + DISALLOW_DIGEST_ARG);
+        }
+
+        // --whitelistDigest changed to --allowDigest in V3.0.0
+        if (whitelistDigestNames != null) {
+            DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + WHITELIST_DIGEST_ARG,
+                    null, OPT + ALLOW_DIGEST_ARG);
+        }
     }
 
     /**
-     * Handle options related to setting up the blacklist.
+     * Handle options related to setting up the disallowed algorithm collection.
      * 
-     * These are --clearBlacklist, --blacklistDigest and --whitelistDigest.
+     * These are <code>--allowAllDigests</code>, <code>--disallowDigest</code>
+     * and <code>--allowDigest</code>.
+     *
+     * The legacy forms (<code>--clearBlacklist</code>, <code>--blacklistDigest</code>
+     * and <code>--whitelistDigest</code> are also handled here.
      */
-    private void processBlacklistOptions() {
-        if (clearBlacklist) {
-            blacklist.clear();
+    // Checkstyle: CyclomaticComplexity OFF
+    private void processDisallowedAlgorithmOptions() {
+        if (allowAllDigests || clearBlacklist) {
+            disallowedAlgorithms.allowAllDigests();
+        }
+
+        if (disallowDigestNames != null) {
+            for (final String name : disallowDigestNames) {
+                final DigestChoice dig = DigestChoice.find(name);
+                if (dig == null) {
+                    errorAndExit("digest choice \"" + name + "\" was not recognised");
+                }
+                disallowedAlgorithms.disallowDigest(dig);
+            }
+        }
+
+        if (allowDigestNames != null) {
+            for (final String name : allowDigestNames) {
+                final DigestChoice dig = DigestChoice.find(name);
+                if (dig == null) {
+                    errorAndExit("digest choice \"" + name + "\" was not recognised");
+                }
+                disallowedAlgorithms.allowDigest(dig);
+            }
         }
 
         if (blacklistDigestNames != null) {
@@ -309,7 +384,7 @@ public class CommandLineArguments {
                 if (dig == null) {
                     errorAndExit("digest choice \"" + name + "\" was not recognised");
                 }
-                blacklist.addDigest(dig);
+                disallowedAlgorithms.disallowDigest(dig);
             }
         }
 
@@ -319,10 +394,12 @@ public class CommandLineArguments {
                 if (dig == null) {
                     errorAndExit("digest choice \"" + name + "\" was not recognised");
                 }
-                blacklist.removeDigest(dig);
+                disallowedAlgorithms.allowDigest(dig);
             }
         }
     }
+    // Checkstyle: CyclomaticComplexity OFF
+
     
     // Checkstyle: JavadocMethod OFF
 
@@ -479,21 +556,21 @@ public class CommandLineArguments {
     }
     
     /**
-     * Returns the signature verification algorithm blacklist.
+     * Returns the {link @DisallowedAlgorithms}.
      * 
-     * @return algorithm blacklist
+     * @return a {@link DisallowedAlgorithms} instance
      */
-    public Blacklist getBlacklist() {
-        return blacklist;
+    public DisallowedAlgorithms getDisallowedAlgorithms() {
+        return disallowedAlgorithms;
     }
     
     /**
-     * Indicates whether the option to list the blacklist has been selected.
+     * Indicates whether the option to list the disallowed algorithms has been selected.
      * 
      * @return <code>true</code> if option selected
      */
-    public boolean doListBlacklist() {
-        return listBlacklist;
+    public boolean doListAlgorithms() {
+        return listAlgorithms || listBlacklist;
     }
     
     public boolean doVerboseOutput() {
@@ -520,7 +597,7 @@ public class CommandLineArguments {
             return;
         }
 
-        if (doListBlacklist()) {
+        if (listAlgorithms || listBlacklist) {
             return;
         }
         
@@ -730,15 +807,15 @@ public class CommandLineArguments {
         out.println(String.format("  --%-20s %s", KEY_PASSWORD_ARG, "Specifies the pin for the signing key."));
 
         out.println();
-        out.println("Signature verification algorithm blacklist options:");
-        out.println(String.format("  --%-20s %s", CLEAR_BLACKLIST_ARG,
-                "Clear the algorithm blacklist."));
-        out.println(String.format("  --%-20s %s", BLACKLIST_DIGEST_ARG,
-                "Blacklist a digest by name (e.g., \"SHA-1\").  Can be used any number of times."));
-        out.println(String.format("  --%-20s %s", WHITELIST_DIGEST_ARG,
-                "Whitelist a digest by name (e.g., \"SHA-1\").  Can be used any number of times."));
-        out.println(String.format("  --%-20s %s", LIST_BLACKLIST_ARG,
-                "List the contents of the algorithm blacklist."));
+        out.println("Signature verification algorithm options:");
+        out.println(String.format("  --%-20s %s", ALLOW_ALL_DIGESTS_ARG,
+                "Allow all digests in signatures to be verified."));
+        out.println(String.format("  --%-20s %s", DISALLOW_DIGEST_ARG,
+                "Disallow a digest by name (e.g., \"SHA-1\").  Can be used any number of times."));
+        out.println(String.format("  --%-20s %s", ALLOW_DIGEST_ARG,
+                "Allow a digest by name (e.g., \"SHA-1\").  Can be used any number of times."));
+        out.println(String.format("  --%-20s %s", LIST_ALGORITHMS_ARG,
+                "List the algorithms disallowed for signature verification."));
         
         out.println();
         out.println("Data Output Options - Option '" + OUT_FILE_ARG + "' is required.");

@@ -889,20 +889,20 @@ public final class XMLSecTool {
         if (cli.getCertificate() != null) {
             try {
                 credential =
-                        CredentialHelper.getFileBasedCredentials(cli.getKey(), cli.getKeyPassword(),
+                        CredentialHelper.getFileBasedCredentials(cli.getKeyFile(), cli.getKeyPassword(),
                                 cli.getCertificate());
             } catch (final KeyException e) {
-                log.error("Unable to read key file " + cli.getKey(), e);
+                log.error("Unable to read key file " + cli.getKeyFile(), e);
                 throw new Terminator(ReturnCode.RC_IO);
             } catch (final CertificateException e) {
-                log.error("Unable to read certificate file " + cli.getKey(), e);
+                log.error("Unable to read certificate file " + cli.getKeyFile(), e);
                 throw new Terminator(ReturnCode.RC_IO);
             }
         } else if (cli.getPkcs11Config() != null) {
             try {
                 credential =
                         CredentialHelper.getPKCS11Credential(cli.getPkcs11Config(),
-                                cli.getKey(), cli.getKeyPassword());
+                                cli.getKeyAlias(), cli.getKeyPassword());
             } catch (final IOException e) {
                 log.error("Error accessing PKCS11 store", e);
                 throw new Terminator(ReturnCode.RC_IO);
@@ -914,7 +914,8 @@ public final class XMLSecTool {
             try {
                 credential =
                         CredentialHelper.getKeystoreCredential(cli.getKeystore(), cli.getKeystorePassword(),
-                                cli.getKeystoreProvider(), cli.getKeystoreType(), cli.getKey(), cli.getKeyPassword());
+                                cli.getKeystoreProvider(), cli.getKeystoreType(), cli.getKeyAlias(),
+                                cli.getKeyPassword());
             } catch (final IOException e) {
                 log.error("Unable to read keystore " + cli.getKeystore(), e);
                 throw new Terminator(ReturnCode.RC_IO);

@@ -49,7 +49,7 @@ public class XSTJ59Test extends BaseTest {
                 "--inFile", "in.xml",
                 "--outFile", "out.xml",
                 "--certificate", "sign.crt",
-                "--key", "sign.key",
+                "--keyFile", "sign.key",
                 "--digest", "SHA-1",
                 "--allowDigest", "SHA-1"
                 };

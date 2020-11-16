@@ -47,7 +47,7 @@ public class XSTJ82Test extends BaseTest {
                 "--outFile", "out.xml",
                 "--pkcs11Config", configFile.getAbsolutePath(),
                 "--keyPassword", "1234",
-                "--key", "key2048",
+                "--keyAlias", "key2048",
                 };
         final CommandLineArguments cli = new CommandLineArguments();
         cli.parseCommandLineArguments(args);
@@ -55,7 +55,7 @@ public class XSTJ82Test extends BaseTest {
 
         // Deep unit test on the CredentialHelper's credential acquisition method
         var cred = CredentialHelper.getPKCS11Credential(cli.getPkcs11Config(),
-                cli.getKey(), cli.getKeyPassword());
+                cli.getKeyAlias(), cli.getKeyPassword());
         Assert.assertNotNull(cred);
 
         var pubKey = cred.getPublicKey();

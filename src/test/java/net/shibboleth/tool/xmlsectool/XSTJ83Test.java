@@ -50,14 +50,14 @@ public class XSTJ83Test extends BaseTest {
                 "--sign",
                 "--inFile", testResource,
                 "--outFile", "out.xml",
-                "--key", keyFile.getAbsolutePath(),
+                "--keyFile", keyFile.getAbsolutePath(),
                 "--certificate", certFile.getAbsolutePath(),
                 };
         final CommandLineArguments cli = new CommandLineArguments();
         cli.parseCommandLineArguments(args);
         XMLSecTool.initLogging(cli);
 
-        final var signingCredential = CredentialHelper.getFileBasedCredentials(cli.getKey(), "",
+        final var signingCredential = CredentialHelper.getFileBasedCredentials(cli.getKeyFile(), "",
                 certFile.getAbsolutePath());
         Assert.assertNotNull(signingCredential);
         final var verifyCredential = CredentialHelper.getFileBasedCredentials(null, "",
@@ -66,7 +66,7 @@ public class XSTJ83Test extends BaseTest {
 
         var pubKey = signingCredential.getPublicKey();
         Assert.assertNotNull(pubKey);
-        System.out.println(pubKey.getClass());
+        // System.out.println(pubKey.getClass());
         Assert.assertEquals(pubKey.getAlgorithm(), "EC");
         Assert.assertTrue(pubKey instanceof ECPublicKey);
         var ecPubKey = (ECPublicKey) pubKey;

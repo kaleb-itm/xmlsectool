@@ -129,7 +129,7 @@ public class XSTJ69Test extends BaseTest {
                 "--inFile", "in.xml",
                 "--outFile", "out.xml",
                 "--certificate", "sign.crt",
-                "--key", "sign.key"
+                "--keyFile", "sign.key"
                 };
         final var cli = new CommandLineArguments();
         cli.parseCommandLineArguments(args);

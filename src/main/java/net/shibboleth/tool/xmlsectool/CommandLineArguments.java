@@ -61,7 +61,10 @@ public class CommandLineArguments {
     private static final String KI_KEY_NAME_ARG = "keyInfoKeyName";
     private static final String KI_CRL_ARG = "keyInfoCRL";
     private static final String CERT_ARG = "certificate";
+    @Deprecated(since="3.0.0", forRemoval=true)
     private static final String KEY_ARG = "key";
+    private static final String KEY_FILE_ARG = "keyFile";
+    private static final String KEY_ALIAS_ARG = "keyAlias";
     private static final String KEY_PASSWORD_ARG = "keyPassword";
     private static final String KEYSTORE_ARG = "keystore";
     private static final String KEYSTORE_PASSWORD_ARG = "keystorePassword";
@@ -189,7 +192,14 @@ public class CommandLineArguments {
     private String cert;
 
     @Parameter(names = OPT + KEY_ARG)
+    @Deprecated(since="3.0.0", forRemoval=true)
     private String key;
+
+    @Parameter(names = OPT + KEY_FILE_ARG)
+    private String keyFile;
+
+    @Parameter(names = OPT + KEY_ALIAS_ARG)
+    private String keyAlias;
 
     @Parameter(names = OPT + KEY_PASSWORD_ARG)
     private String keyPassword;
@@ -340,6 +350,17 @@ public class CommandLineArguments {
         if (whitelistDigestNames != null) {
             DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + WHITELIST_DIGEST_ARG,
                     null, OPT + ALLOW_DIGEST_ARG);
+        }
+        
+        // --key deprecated, what to use instead depends on context
+        if (key != null) {
+            if (cert != null) {
+                DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + KEY_ARG,
+                        null, OPT + KEY_FILE_ARG);
+            } else {
+                DeprecationSupport.warn(ObjectType.CLI_OPTION, OPT + KEY_ARG,
+                        null, OPT + KEY_ALIAS_ARG);
+            }
         }
     }
 
@@ -527,7 +548,19 @@ public class CommandLineArguments {
         return cert;
     }
 
-    public String getKey() {
+    public String getKeyFile() {
+        if (keyFile != null) {
+            return keyFile;
+        }
+        // fall back to legacy option
+        return key;
+    }
+    
+    public String getKeyAlias() {
+        if (keyAlias != null) {
+            return keyAlias;
+        }
+        // fall back to legacy option
         return key;
     }
 
@@ -645,8 +678,14 @@ public class CommandLineArguments {
         }
         
         if (doSign()) {
-            if (getKey() == null) {
-                errorAndExit(KEY_ARG + " option is required");
+            if (getCertificate() != null) {
+                if (getKeyFile() == null) {
+                    errorAndExit(KEY_FILE_ARG + " option is required");
+                }
+            } else {
+                if (getKeyAlias() == null) {
+                    errorAndExit(KEY_ALIAS_ARG + " option is required");
+                }
             }
 
             if ((getKeystore() != null || getPkcs11Config() != null) && getKeyPassword() == null) {
@@ -762,11 +801,11 @@ public class CommandLineArguments {
         out.println("PEM/DER Encoded Certificate/Key Options - "
                 + "these options are mutually exclusive with the Keystore and PKCS#11 options. "
                 + "The '" + CERT_ARG + "' option is required for signature verification. "
-                + "The '" + CERT_ARG + "' and '" + KEY_ARG
+                + "The '" + CERT_ARG + "' and '" + KEY_FILE_ARG
                     + "' options are required for signing.");
         out.println(String.format("  --%-20s %s", CERT_ARG,
                 "Specifies the file from which the signing, or validation, certificate is read."));
-        out.println(String.format("  --%-20s %s", KEY_ARG,
+        out.println(String.format("  --%-20s %s", KEY_FILE_ARG,
                 "Specifies the file from which the signing key is read."));
         out.println(String.format("  --%-20s %s", KEY_PASSWORD_ARG,
                 "Specifies the password for the signing key."));
@@ -777,7 +816,7 @@ public class CommandLineArguments {
                 + " Options '"
                 + KEYSTORE_ARG
                 + "', '"
-                + KEY_ARG
+                + KEY_ALIAS_ARG
                 + "', and '"
                 + KEY_PASSWORD_ARG + "' are required.");
         out.println(String.format("  --%-20s %s", KEYSTORE_ARG, "Specifies the keystore file."));
@@ -786,7 +825,7 @@ public class CommandLineArguments {
         out.println(String.format("  --%-20s %s", KEYSTORE_TYPE_ARG, "Specifies the type of the keystore."));
         out.println(String.format("  --%-20s %s", KEYSTORE_PROVIDER_ARG,
                 "Specifies the keystore provider class to use instead of the default one for the JVM."));
-        out.println(String.format("  --%-20s %s", KEY_ARG,
+        out.println(String.format("  --%-20s %s", KEY_ALIAS_ARG,
                 "Specifies the key alias for the signing key is read."));
         out.println(String.format("  --%-20s %s", KEY_PASSWORD_ARG,
                 "Specifies the password for the signing key. Keystore password used if none is given."));
@@ -797,12 +836,12 @@ public class CommandLineArguments {
                 + " Options '"
                 + PKCS11_CONFIG_ARG
                 + "' and '"
-                + KEY_ARG
+                + KEY_ALIAS_ARG
                 + "' are required. Option '"
                 + KEY_PASSWORD_ARG
                 + "' required when signing and, with some PKCS#11 devices, during signature verification.");
         out.println(String.format("  --%-20s %s", PKCS11_CONFIG_ARG, "The PKCS#11 token configuration file."));
-        out.println(String.format("  --%-20s %s", KEY_ARG,
+        out.println(String.format("  --%-20s %s", KEY_ALIAS_ARG,
                 "Specifies the key alias for the signing key is read."));
         out.println(String.format("  --%-20s %s", KEY_PASSWORD_ARG, "Specifies the pin for the signing key."));
 

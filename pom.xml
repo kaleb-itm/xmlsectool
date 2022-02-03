@@ -24,7 +24,7 @@
 
     <properties>
         <opensaml.groupId>org.opensaml</opensaml.groupId>
-        <opensaml.version>4.1.0</opensaml.version>
+        <opensaml.version>4.1.1</opensaml.version>
         <java-support.version>8.2.1</java-support.version>
         <net.shibboleth.maven.enforcer.rules.checkM2>false</net.shibboleth.maven.enforcer.rules.checkM2>
     </properties>

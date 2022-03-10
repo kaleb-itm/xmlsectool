@@ -26,7 +26,6 @@
         <opensaml.groupId>org.opensaml</opensaml.groupId>
         <opensaml.version>4.2.0-SNAPSHOT</opensaml.version>
         <java-support.version>8.3.0-SNAPSHOT</java-support.version>
-        <net.shibboleth.maven.enforcer.rules.checkM2>false</net.shibboleth.maven.enforcer.rules.checkM2>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>
 
@@ -210,7 +209,7 @@
                     <dependency>
                         <groupId>net.shibboleth.maven.enforcer.rules</groupId>
                         <artifactId>maven-dist-enforcer</artifactId>
-                        <version>3.1.1-SNAPSHOT</version>
+                        <version>${maven-dist-enforcer.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -225,14 +224,14 @@
                                 <jarEnforcer implementation="net.shibboleth.mvn.enforcer.impl.JarEnforcer">
                                     <dataGroupId>net.shibboleth.maven.enforcer.rules</dataGroupId>
                                     <dataArtifactId>maven-dist-enforcer-data</dataArtifactId>
-                                    <dataVersion>1.0.1-SNAPSHOT</dataVersion>
+                                    <dataVersion>${maven-dist-enforcer-data.version}</dataVersion>
                                     <dataKeyRing>${basedir}/src/main/enforcer/shibbolethKeys.gpg</dataKeyRing>
                                     <parentPomDir>${basedir}</parentPomDir>
                                     <zipFiles>${project.build.directory}/${project.artifactId}-${project.version}-bin.zip</zipFiles>
                                     <checkSignatures>true</checkSignatures>
                                     <checkDependencies>true</checkDependencies>
                                     <listJarSources>false</listJarSources>
-                                    <checkM2>${net.shibboleth.maven.enforcer.rules.checkM2}</checkM2>
+                                    <checkM2>false</checkM2>
                                 </jarEnforcer>
                             </rules>
                         </configuration>

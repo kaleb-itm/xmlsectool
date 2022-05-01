@@ -24,8 +24,8 @@
 
     <properties>
         <opensaml.groupId>org.opensaml</opensaml.groupId>
-        <opensaml.version>4.2.0-SNAPSHOT</opensaml.version>
-        <java-support.version>8.3.0-SNAPSHOT</java-support.version>
+        <opensaml.version>4.2.0</opensaml.version>
+        <java-support.version>8.3.1</java-support.version>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>
 

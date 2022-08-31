@@ -18,3 +18,6 @@
 # The contents of the svn:ignore property on the branch root.
 /test-output
 /target
+.classpath
+.project
+.settings

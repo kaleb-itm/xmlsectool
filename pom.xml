@@ -24,7 +24,7 @@
 
     <properties>
         <opensaml.groupId>org.opensaml</opensaml.groupId>
-        <opensaml.version>4.2.0</opensaml.version>
+        <opensaml.version>4.3.0-SNAPSHOT</opensaml.version>
         <java-support.version>8.3.1</java-support.version>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>
@@ -94,7 +94,7 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>

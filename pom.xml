@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.shibboleth</groupId>
         <artifactId>parent</artifactId>
-        <version>11.3.5-SNAPSHOT</version>
+        <version>11.3.6-SNAPSHOT</version>
     </parent>
 
     <groupId>net.shibboleth.tool</groupId>
@@ -24,7 +24,7 @@
 
     <properties>
         <opensaml.groupId>org.opensaml</opensaml.groupId>
-        <opensaml.version>4.3.0-SNAPSHOT</opensaml.version>
+        <opensaml.version>4.3.0</opensaml.version>
         <java-support.version>8.3.1</java-support.version>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>

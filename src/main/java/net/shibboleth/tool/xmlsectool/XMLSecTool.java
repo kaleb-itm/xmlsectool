@@ -91,12 +91,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import net.shibboleth.utilities.java.support.httpclient.HttpClientBuilder;
-import net.shibboleth.utilities.java.support.primitive.StringSupport;
-import net.shibboleth.utilities.java.support.xml.AttributeSupport;
-import net.shibboleth.utilities.java.support.xml.ElementSupport;
-import net.shibboleth.utilities.java.support.xml.SchemaBuilder.SchemaLanguage;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.shared.httpclient.HttpClientBuilder;
+import net.shibboleth.shared.primitive.StringSupport;
+import net.shibboleth.shared.xml.AttributeSupport;
+import net.shibboleth.shared.xml.ElementSupport;
+import net.shibboleth.shared.xml.SchemaBuilder.SchemaLanguage;
+import net.shibboleth.shared.xml.SerializeSupport;
 
 /**
  *  A command line tool for checking an XML file for well-formedness and validity as well as

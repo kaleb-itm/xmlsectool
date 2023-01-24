@@ -20,8 +20,8 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import net.shibboleth.utilities.java.support.xml.ElementSupport;
-import net.shibboleth.utilities.java.support.xml.SchemaBuilder.SchemaLanguage;
+import net.shibboleth.shared.xml.ElementSupport;
+import net.shibboleth.shared.xml.SchemaBuilder.SchemaLanguage;
 
 /**
  * Test for basic EC signatures.

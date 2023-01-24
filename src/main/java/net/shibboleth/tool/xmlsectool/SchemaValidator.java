@@ -32,10 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import net.shibboleth.utilities.java.support.logic.Constraint;
-import net.shibboleth.utilities.java.support.logic.ConstraintViolationException;
-import net.shibboleth.utilities.java.support.xml.SchemaBuilder;
-import net.shibboleth.utilities.java.support.xml.SchemaBuilder.SchemaLanguage;
+import net.shibboleth.shared.logic.Constraint;
+import net.shibboleth.shared.logic.ConstraintViolationException;
+import net.shibboleth.shared.xml.SchemaBuilder;
+import net.shibboleth.shared.xml.SchemaBuilder.SchemaLanguage;
 
 /**
  * Validates XML documents based on a schema file, or a collection of schema

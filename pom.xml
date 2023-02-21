@@ -93,11 +93,11 @@
         </dependency>
         <dependency>
             <groupId>${httpclient.groupId}</groupId>
-            <artifactId>httpclient</artifactId>
+            <artifactId>${httpclient.artifactId}</artifactId>
         </dependency>
         <dependency>
-            <groupId>${httpclient.groupId}</groupId>
-            <artifactId>httpcore</artifactId>
+            <groupId>${httpclient.httpcore.groupId}</groupId>
+            <artifactId>${httpclient.httpcore.artifactId}</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

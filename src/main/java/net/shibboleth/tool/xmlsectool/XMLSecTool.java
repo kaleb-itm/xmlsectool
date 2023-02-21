@@ -55,10 +55,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyName;
@@ -263,8 +263,8 @@ public final class XMLSecTool {
         getMethod.setHeader("Accept-Encoding", "gzip,deflate");
         try {
             final HttpClient httpClient = httpClientBuilder.buildClient();
-            final HttpResponse response = httpClient.execute(getMethod);
-            final int status = response.getStatusLine().getStatusCode();
+            final ClassicHttpResponse response = httpClient.executeOpen(null, getMethod, null);
+            final int status = response.getCode();
             if (status != 200) {
                 log.error("Non-ok status code '" + Integer.valueOf(status) + "' returned by '"
                         + cli.getInputUrl() + "'");

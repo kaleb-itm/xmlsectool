@@ -1,10 +1,7 @@
 /*
- * Licensed to the University Corporation for Advanced Internet Development,
- * Inc. (UCAID) under one or more contributor license agreements.  See the
- * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache
- * License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -62,8 +59,8 @@ public final class CredentialHelper {
      * @throws CertificateException if there is a problem decoding the certificate
      * @throws KeyException if there is a problem decoding the private key
      */
-    protected static BasicX509Credential getFileBasedCredentials(final String keyFile, final String keyPassword,
-            final String certificateFile) throws KeyException, CertificateException {
+    @Nonnull protected static BasicX509Credential getFileBasedCredentials(final String keyFile,
+            final String keyPassword, final String certificateFile) throws KeyException, CertificateException {
         LOG.debug("Reading PEM/DER encoded credentials from the filesystem");
 
         // First, read the certificate
@@ -102,7 +99,7 @@ public final class CredentialHelper {
      * @throws IOException if there was a problem reading the keystore
      * @throws GeneralSecurityException if there was a problem 
      */
-    protected static BasicX509Credential getKeystoreCredential(final String keystorePath,
+    @Nonnull protected static BasicX509Credential getKeystoreCredential(final String keystorePath,
             final String keystorePassword, final String keystoreProvider, final String keystoreType,
             final String keyAlias, final String keyPassword) throws IOException,
             GeneralSecurityException {

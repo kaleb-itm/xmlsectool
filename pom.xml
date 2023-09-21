@@ -47,10 +47,20 @@
             <artifactId>shib-support</artifactId>
             <version>${shib-shared.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${shib-shared.groupId}</groupId>
+            <artifactId>shib-security</artifactId>
+            <version>${shib-shared.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>${opensaml.groupId}</groupId>
             <artifactId>opensaml-core-api</artifactId>
+            <version>${opensaml.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${opensaml.groupId}</groupId>
+            <artifactId>opensaml-core-impl</artifactId>
             <version>${opensaml.version}</version>
         </dependency>
         <dependency>

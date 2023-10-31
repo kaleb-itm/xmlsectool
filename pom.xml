@@ -26,7 +26,7 @@
         <opensaml.groupId>org.opensaml</opensaml.groupId>
         <opensaml.version>5.0.1-SNAPSHOT</opensaml.version>
         <shib-shared.groupId>net.shibboleth</shib-shared.groupId>
-        <shib-shared.version>9.0.1-SNAPSHOT</shib-shared.version>
+        <shib-shared.version>9.1.0-SNAPSHOT</shib-shared.version>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>
 

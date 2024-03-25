@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.shibboleth</groupId>
         <artifactId>parent</artifactId>
-        <version>17.1.1-SNAPSHOT</version>
+        <version>17.1.1</version>
     </parent>
 
     <groupId>net.shibboleth.tool</groupId>
@@ -24,9 +24,9 @@
 
     <properties>
         <opensaml.groupId>org.opensaml</opensaml.groupId>
-        <opensaml.version>5.1.1-SNAPSHOT</opensaml.version>
+        <opensaml.version>5.1.1</opensaml.version>
         <shib-shared.groupId>net.shibboleth</shib-shared.groupId>
-        <shib-shared.version>9.1.1-SNAPSHOT</shib-shared.version>
+        <shib-shared.version>9.1.1</shib-shared.version>
         <dependenciesDirectory>${project.build.directory}/dependencies</dependenciesDirectory>
     </properties>
 
